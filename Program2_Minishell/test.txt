@@ -1,0 +1,12 @@
+total 88
+-rw-r--r-- 1 sajpatel sajpatel    27 Nov  6 15:46 foo.txt
+-rw-r--r-- 1 sajpatel sajpatel    25 Nov  6 15:14 foo.txt~
+-rwxr-xr-x 1 sajpatel sajpatel 17056 Nov  6 15:50 lab1
+-rw-r--r-- 1 sajpatel sajpatel  2096 Nov  6 15:50 lab1.c
+-rw-r--r-- 1 sajpatel sajpatel  3416 Nov  6 13:29 lab1.c~
+-rwxr-xr-x 1 sajpatel sajpatel 17824 Nov  8 11:10 minishell
+-rw-r--r-- 1 sajpatel sajpatel  7494 Nov  7 15:54 minishell.c
+-rw-r--r-- 1 sajpatel sajpatel  7377 Nov  7 14:52 minishell.c~
+-rwxr-xr-x 1 sajpatel sajpatel 16728 Nov  6 15:54 test
+-rw-r--r-- 1 sajpatel sajpatel   124 Nov  6 15:53 test.c
+-rw-r--r-- 1 sajpatel sajpatel     0 Nov  8 11:11 test.txt
