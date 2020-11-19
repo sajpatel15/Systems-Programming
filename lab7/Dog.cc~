@@ -1,0 +1,35 @@
+#include <iostream>
+#include <string.h>
+#include "Dog.h"
+
+Dog::Dog() : Animal(){
+  std::cout << "Dog constructor called\n";
+  name = "dog";
+  sound = "woof";
+}
+
+Dog::Dog(char* c, char* n) : Animal(c){
+  std::coud << "Dog 2 parm constructor called\n";
+  strcpy(this->name, n);
+  strcpy(this->sound, "woof");
+}
+
+Dog::Dog(const Dog& d) : Animal(d){
+  std::cout << "Dog copy constructor called\n";
+  strcpy(this->name, d.name);
+  strcpy(this->sound,d.sound);
+}
+
+Dog::~Dog(){
+  std::out << "Dog destructor called\n";
+}
+
+char* Dog::getName(){
+  std::cout << "Dog getName called\n";
+  return this->name;
+}
+
+void Dog::makeSound(){
+  std::cout << "Dog makeSound called\n";
+  std::cout << this->sound << "\n";
+}

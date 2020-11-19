@@ -1,0 +1,148 @@
+# include <stdio.h>
+# include <stdlib.h>
+
+// structure that stores the value and freqeuncy of the histogram
+typedef struct freq{
+  int value;
+  int frequency;
+} histogram;
+
+
+// function prototypes
+int* readScore(int* count);
+void printScores(int* arr, int count);
+int calcHistogram (histogram** hist, int* entries, int count);
+void displayScores(histogram*, int count);
+void sortHistogram(struct freq* histogram, int size);
+  
+int main(){
+
+  int* arr;
+  int count;
+  int max;
+  histogram*  hist;
+  // calling the read score function to check the input of scores that the system/file gives
+  arr = readScore(&count);
+
+  // calling the printScore fuction to print all the scores that were read
+  printScores(arr, count);
+  printf("\n");
+
+  max = calcHistogram(&hist, arr, count);
+  printf("Max is: %d\n",max); 
+  displayScores(hist, max);
+  printf("\n");
+  
+  free(arr);
+
+  
+  /*
+  struct freq histogram[max];
+  // setting all the values from max down and the freuqnecy to 0
+  for(int i = 0; i < max; i++){
+    histogram[i].value = 0;
+    histogram[i].frequency = 0;
+  }
+
+  // calling the calcHistogram function to check value and frequency
+  calcHistogram(histogram, arr, count+1, max);
+
+  // calling the displayScore funciton to show the histogram
+  displayScores(histogram, max);
+  printf("\n");
+  // calling the sortHistogram function that sorts the histogram according to frequency
+  sortHistogram(histogram, max);
+
+  // calling the displayScores function that shows the sorted histogram
+  displayScores(histogram, max);
+  */
+  return 0;
+}
+
+void sortHistogram(struct freq* histogram, int size){
+  struct freq temp;
+
+  for (int i = 0; i < size; i++){
+    for (int j = 0; j < (size - 1 - i); j++){
+
+      if(histogram[j].frequency < histogram[j + 1].frequency){
+
+	temp = histogram[j];
+	histogram[j] = histogram[j+1];
+	histogram[j+1] = temp;
+	
+      }
+      
+    }
+
+  }
+
+}
+void displayScores(histogram* hist, int count){
+  
+  for(int i = 0; i < count; i++){
+    if((hist + i)->frequency != 0){
+      printf("value %d: freq %d\n", (hist + i)->value, (hist + i)->frequency);
+     }
+  }
+  
+}
+int calcHistogram (histogram** hist, int* entries, int count){
+
+  *hist = (histogram*) malloc(count * sizeof(histogram)); 
+
+  int filled = 0;
+  for(int i = 0; i < count; i++){
+    int target = *(entries + i);
+    int j = 0;
+    while ( j < count && target != (*hist + j)->value){
+      j++;
+     
+    }
+
+    if (j != count){
+      (*hist + j)->frequency++;
+    }else{
+      (*hist + filled)->value = target;
+      (*hist + filled)->frequency = 1;
+      filled++;
+    }
+  }
+ 
+
+  
+  return filled;
+  
+}
+
+  // function that prints the scores that were read by the scanner
+void printScores(int* arr, int count){
+  for (int i = 0; i < count; i++){
+    printf("Score %d: %d\n", i, arr[i]);
+  }
+
+}
+
+  // function that reads the score using the scanner
+int* readScore(int* count){
+
+  int max = 100;
+  int* arr = (int*)malloc(max * sizeof(int)); // array bytes on heap
+  
+  //looping though file
+  int x = 1;
+  int c = 0;
+  while(x > 0){
+    int k = 0;
+    scanf("%d",&k);
+    if (k != -1){
+      *(arr+c) = k;
+     
+      c = c + 1;
+    } else {
+      x = -1;
+    }
+  }
+  *count = c; // "returns" c's value to count in main
+  return arr;
+}

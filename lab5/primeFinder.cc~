@@ -1,0 +1,88 @@
+#include <iostream>
+#include <thread>
+#include <omp.h>
+#include <mutex>
+
+std::mutex screenLock;
+
+bool isPrime(int num){
+  for(int i = 2; i < num/2; i++){
+    if(num % i == 0){
+      return false;
+    }
+
+  }
+  return true;
+}
+
+int primeRange(int start, int stop){
+  int count = 0;
+  for(int i = start; i < stop+1; i++){
+    if(isPrime(i)){
+      count++;
+    }
+  }
+  return count;
+}
+
+void myRun(int tnum, int start, int stop, int* result){
+  result[tnum] = primeRange(start,stop);
+}
+
+int main(){
+  /*
+  int numThreads = 4;
+  std:: thread* ths[numThreads];
+  */
+  
+  int range_start = 1000;
+  int range_stop = 1000000;
+  int result = 0;
+  int diff_range = range_stop - range_start;
+  omp_set_num_threads(5);
+
+  // using the blocking methodolgy
+#pragma omp parallel
+  {
+    int tn = omp_get_thread_num();
+    int numT = omp_get_num_threads();
+    screenLock.lock();
+    std::cout << "I'm thread " << tn << " of " << numT << "\n";
+    screenLock.unlock();
+
+#pragma omp for schedule(static, diff_range/numT) reduction (+:result)
+    for(int i = range_start; i <= range_stop; i++){
+      if(isPrime(i)){
+	  result++;
+	}
+    }
+    
+  }
+ std::cout << "Number of primes: " << result  << "\n";
+
+ //using the stripping technique
+ int result2 = 0;
+ #pragma omp parallel
+ {
+   int tn = omp_get_thread_num();
+   int numT = omp_get_num_threads();
+   screenLock.lock();
+   std::cout << "I'm thread " << tn << " of " << numT << "\n";
+   screenLock.unlock();
+
+
+#pragma omp for schedule(static, 1) reduction (+:result)
+   for(int i = range_start; i <= range_stop; i++){
+     if(isPrime(i)){
+       result2++;
+     }
+   }
+ } 
+ std::cout << "Number of primes: " << result2  << "\n";
+  
+}
+  
+  
+
+  
+

@@ -1,0 +1,32 @@
+#include <stdio.h>
+#include <math.h>
+
+typedef unsigned short bitSet;
+
+bitSet makeBitSet(){
+
+}
+
+void displayBitSet(bitSet bs){
+
+
+}
+
+void setBit(bitSet* bs, int index){
+
+}
+
+void clearBit(bitSet* bs, int index){
+
+}
+
+int bitValue(bitSet bs, int index){
+
+}
+
+
+int main(){
+
+  
+
+}

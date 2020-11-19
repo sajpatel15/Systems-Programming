@@ -1,0 +1,17 @@
+#include <stdio.h>
+#include <stdio.h>
+
+struct coord{
+  intx;
+  int y;
+  int z;
+};
+
+int main(){
+
+  struct coord p1;
+
+  p1.x = 5;
+  printf("%d\n",p1.x);
+
+}

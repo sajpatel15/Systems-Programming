@@ -1,0 +1,85 @@
+# include <iostream>
+# include <thread>
+
+
+bool isPrime(int num){
+  for(int i = 2; i < num/2; i++){
+    if (num % i == 0){
+      //      std::cout << num << " is not a prime number\n";
+      return false;
+      
+    }
+  }
+  //    std::cout << num << " is a prime number\n";
+    return true;
+}
+  
+int primeRange(int start, int stop){
+
+  int count = 0;
+  for(int i = start; i < stop+1; i++){
+    if(isPrime(i)){
+      count++;
+    }
+
+  }
+  return count;
+  
+}
+void myRun(int tnum, int start, int stop, int* result){
+  result[tnum] = primeRange(start, stop);
+
+}
+
+int main(){
+  /*
+  bool a = isPrime(35);
+  int b = primeRange(20,50);
+
+  std::cout << b << " is the number of primes in the given range\n";
+ 
+  */
+
+  int numThreads = 4;
+  std:: thread* ths[numThreads];
+
+  int range_start = 20;
+  int range_stop = 50;
+  int* results = (int*)malloc(numThreads*sizeof(int));
+  int diff_range = range_stop - range_start;
+  
+  for(int i = 0; i < numThreads; i++){
+
+    int start  = (int)(range_start + ((diff_range / numThreads) * i));
+    if(start != range_start){
+      start++;
+    }
+    std::cout << "Start " << i << " : " << start << "\n";
+    
+    int stop  = (int)(range_start +((diff_range / numThreads) * (i + 1)) + 1);
+    if((stop + (diff_range / numThreads)) > range_stop){
+      stop = range_stop;
+    }
+    
+    std::cout << "Stop " << i << " : " << stop << "\n";
+    std:: thread* th = new std::thread(myRun, i, start, stop, results);
+    ths[i] = th;
+  }
+
+  for(int i = 0; i < numThreads; i++){
+    ths[i]->join();
+  }
+
+  int result = 0;
+
+  for(int i = 0; i < numThreads; i++) {
+    result += results[i];
+    
+  }
+
+  std::cout<< (result) << "\n";
+  
+  
+}
+
+

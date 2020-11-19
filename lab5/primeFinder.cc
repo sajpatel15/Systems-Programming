@@ -1,0 +1,121 @@
+#include <iostream>
+#include <thread>
+#include <omp.h>
+#include <mutex>
+
+std::mutex screenLock;
+
+bool isPrime(int num){
+  for(int i = 2; i < num/2; i++){
+    if(num % i == 0){
+      return false;
+    }
+
+  }
+  return true;
+}
+
+int primeRange(int start, int stop){
+  int count = 0;
+  for(int i = start; i < stop+1; i++){
+    if(isPrime(i)){
+      count++;
+    }
+  }
+  return count;
+}
+
+void myRun(int tnum, int start, int stop, int* result){
+  result[tnum] = primeRange(start,stop);
+}
+
+void blockingFinder(int start, int stop){
+  int numT = 5;
+  omp_set_num_threads(numT);
+  int result= 0;
+  double startTime[numT];
+  double endTime[numT];
+  int numPrime[numT];
+  
+  for(int i = 0; i < numT; i++){
+    numPrime[i] = 0;
+    startTime[i] = 0;
+    endTime[i] = 0;
+  }
+
+#pragma omp parallel
+  {
+  int tnum = omp_get_thread_num();
+  startTime[tnum] = omp_get_wtime();
+#pragma omp for reduction(+:result) nowait
+  for(int i = start; i < stop; i++){
+    int temp = isPrime(i);
+    numPrime[tnum] += temp;
+    result += temp;
+  }
+  endTime[tnum] = omp_get_wtime(); 
+  }
+  
+  double totalTime = 0;
+  for(int i = 0; i < numT; i++){
+    std::cout<< "time for " << i << ": " << endTime[i] - startTime[i] << " with " << numPrime[i] << " found\n";
+    totalTime += (endTime[i] - startTime[i]);
+  }
+  std::cout <<"Overall time: " << totalTime << " with " << result << " found\n";
+
+}
+void stripingFinder(int start, int stop){
+  int numT = 5;
+  omp_set_num_threads(numT);
+  int result= 0;
+  double startTime[numT];
+  double endTime[numT];
+  int numPrime[numT];
+  
+  for(int i = 0; i < numT; i++){
+    numPrime[i] = 0;
+    startTime[i] = 0;
+    endTime[i] = 0;
+  }
+
+#pragma omp parallel
+  {
+  int tnum = omp_get_thread_num();
+  startTime[tnum] = omp_get_wtime();
+#pragma omp for schedule(static,1) reduction(+:result) nowait
+  for(int i = start; i < stop; i++){
+    int temp = isPrime(i);
+    numPrime[tnum] += temp;
+    result += temp;
+  }
+  endTime[tnum] = omp_get_wtime(); 
+  }
+  
+  double totalTime = 0;
+  for(int i = 0; i < numT; i++){
+    std::cout<< "time for " << i << ": " << endTime[i] - startTime[i] << " with " << numPrime[i] << " found\n";
+    totalTime += (endTime[i] - startTime[i]);
+  }
+  std::cout <<"Overall time: " << totalTime << " with " << result << " found\n";
+
+  
+}
+
+int main(){
+  /*
+  int numThreads = 4;
+  std:: thread* ths[numThreads];
+  */
+  
+  std::cout << "Blocking\n";
+  blockingFinder(1000, 1000000);
+  std::cout << "Striping\n";
+  stripingFinder(1000, 1000000);
+ 
+
+}
+  
+  
+
+  
+

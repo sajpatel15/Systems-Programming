@@ -1,0 +1,21 @@
+#ifndef ANIMAL_H
+#define ANIMAL_H
+#include <iostream>
+#include <string.h>
+
+class Animal{
+ protected:
+  char color[20];
+  char sound[20];
+
+ public:
+  Animal();
+  Animal(const char* color);
+  Animal(const Animal& a);
+  virtual ~Animal();
+  char* getColor();
+  virtual void makeSound();
+  virtual char* getName() = 0;
+  
+};
+#endif
